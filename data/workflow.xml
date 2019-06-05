@@ -1,0 +1,41 @@
+<workflow-app name="spark-fp-wf" xmlns="uri:oozie:workflow:0.5">
+        <start to="spark-clean-action"/>
+        <action name="spark-clean-action">
+                <spark xmlns="uri:oozie:spark-action:0.1">
+                        <job-tracker>${jobTracker}</job-tracker>
+                        <name-node>${nameNode}</name-node>
+                        <prepare>
+                                <delete path="${nameNode}/cleaned/users/users.csv" />
+                                <delete path="${nameNode}/cleaned/products/prods.csv" />
+                        </prepare>
+                        <master>${master}</master>
+                        <name>spark cleaning job</name>
+                        <class>App</class>
+                        <jar>${nameNode}/FinalProject/lib/SparkCleaner-assembly-0.1.jar</jar>
+                        <arg>clean</arg>
+                </spark>
+                <ok to="spark-consolidate-action"/>
+                <error to="kill"/>
+        </action>
+
+        <action name="spark-consolidate-action">
+                <spark xmlns="uri:oozie:spark-action:0.1">
+                        <job-tracker>${jobTracker}</job-tracker>
+                        <name-node>${nameNode}</name-node>
+                        <prepare>
+                                <delete path="${nameNode}/analytic/data.csv" />
+                        </prepare>
+                        <master>${master}</master>
+                        <name>spark consolidating job</name>
+                        <class>App</class>
+                        <jar>${nameNode}/FinalProject/lib/SparkCleaner-assembly-0.1.jar</jar>
+                        <arg>consolidate</arg>
+                </spark>
+                <ok to="done"/>
+                <error to="kill"/>
+        </action>
+        <kill name="kill">
+                <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+        </kill>
+        <end name="done"/>				
+</workflow-app>

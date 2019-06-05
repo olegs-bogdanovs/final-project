@@ -1,0 +1,19 @@
+<coordinator-app name="Final Project coordinator job" start="2019-06-05T02:00Z " end="2019-12-31T02:00Z" frequency="60" timezone="UTC" xmlns="uri:oozie:coordinator:0.4">
+	<action>
+		<workflow>
+			<app-path>/FinalProject/</app-path>
+			<configuration>
+				<property>
+					<name>nameNode</name>
+					<value>${nameNode}</value>
+					</property>
+			
+				<property>
+					<name>jobTracker</name>
+					<value>${jobTracker}</value>
+				</property>
+				
+			</configuration>
+		</workflow>
+	</action>
+</coordinator-app>
